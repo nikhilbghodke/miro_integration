@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import WindowCloseIcon from 'mdi-react/WindowCloseIcon';
 
-function Whiteboard({ show, onClose }) {
+function Whiteboard({ show, onClose, boardId }) {
   if (!show) {
     return null;
   }
+  //alert(boardId)
   return (
     <div className="whiteboard-container">
       <div className="whiteboard-header">
@@ -13,7 +14,7 @@ function Whiteboard({ show, onClose }) {
         <WindowCloseIcon onClick={onClose} style={{ cursor: 'pointer' }} />
       </div>
       <iframe
-        src="https://miro.com/app/live-embed/o9J_lSWCCok=/?embedAutoplay=true&moveToViewport=-23165,-5837,13803,7546"
+        src={`https://miro.com/app/live-embed/${boardId}/?embedAutoplay=true`}
       ></iframe>
     </div>
   );

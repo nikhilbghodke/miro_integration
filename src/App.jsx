@@ -14,6 +14,7 @@ import Conference from './Conference';
 import { HMSClient, HMSPeer, HMSClientConfig } from '@100mslive/hmsvideo-web';
 import { dependencies } from '../package.json';
 import Whiteboard from './Whiteboard';
+import MiroBoardDialog from "./MiroBoardDialog"
 
 const sdkVersion = dependencies['@100mslive/hmsvideo-web'].substring(1);
 console.info(
@@ -49,6 +50,8 @@ class App extends React.Component {
       vidFit: false,
       loginInfo: {},
       messages: [],
+      boardId:null,
+      isMiroDialogOpen:false
     };
 
     this._settings = {
@@ -378,14 +381,20 @@ class App extends React.Component {
   };
 
   _handleMiro = () => {
-    this.setState({ isWhiteboardOpen: true });
-    const info = { senderName: this.state.loginInfo.displayName, msg: { isWhiteboard: true }};
-    this.client.broadcast(info, this.client.rid);
+    
+    this.setState({isMiroDialogOpen:true})
   }
 
   _closeMiro = () => {
     this.setState({ isWhiteboardOpen: false });
     const info = { senderName: this.state.loginInfo.displayName, msg: { isWhiteboard: false }};
+    this.client.broadcast(info, this.client.rid);
+  }
+
+  _setBoardId=(boardId)=>{
+    this.setState({boardId,isMiroDialogOpen:false})
+    this.setState({ isWhiteboardOpen: true });
+    const info = { senderName: this.state.loginInfo.displayName, msg: { isWhiteboard: true }};
     this.client.broadcast(info, this.client.rid);
   }
 
@@ -445,7 +454,8 @@ class App extends React.Component {
                 </div>
               </Sider>
               <Layout className={`app-right-layout ${isWhiteboardOpen ? 'whiteboard': ''}`}>
-                <Whiteboard show={isWhiteboardOpen} onClose={this._closeMiro}/>
+                <Whiteboard show={isWhiteboardOpen} onClose={this._closeMiro} boardId={this.state.boardId}/>
+                {this.state.isMiroDialogOpen&&<MiroBoardDialog setBoardId={this._setBoardId}/>}
                 <Content style={{ flex: 1, position: 'relative' }}>
                   <div>
                     <Conference
